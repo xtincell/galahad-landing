@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Galahad — self-hosted team of autonomous AI agents</title>
-<meta name="description" content="Galahad : une équipe d'agents IA autonomes sur un seul VPS, pilotée depuis Telegram, agnostique à ton fournisseur de LLM. Framework open source (MIT). Tes données, ton serveur, tes règles.">
+<meta name="description" content="Galahad : une équipe d'agents IA autonomes sur un seul VPS, pilotée depuis Telegram, agnostique à ton fournisseur de LLM. Moteur propriétaire, procédures déterministes et décisions IA facultatives. Stockage local ; traitements externes selon les fournisseurs configurés.">
 <meta property="og:title" content="Galahad — self-hosted team of autonomous AI agents">
-<meta property="og:description" content="Un VPS, pilotage Telegram, provider-agnostic. Trois rôles — Chef, Guardian, Traveler — + un bridge Claude optionnel. Open source, MIT.">
+<meta property="og:description" content="Un VPS, pilotage Telegram, provider-agnostic. Trois rôles — Chef, Guardian, Traveler — + un bridge Claude optionnel. Code propriétaire et réceptions documentées.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -159,183 +159,101 @@
     <div class="nav-links">
       <a href="#roles" class="hideM">Roles</a>
       <a href="#why" class="hideM">Pourquoi</a>
-      <a href="#pricing" class="hideM">Pricing</a>
-      <a class="btn" href="https://github.com/xtincell/galahad" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="#projets" class="hideM">Projets</a>
+      <a href="#pricing" class="hideM">Service</a>
+      <a class="btn" href="mailto:xtincell@gmail.com?subject=Galahad%20Acces%20au%20code">Accès au code</a>
     </div>
   </div></nav>
 
   <header class="hero"><div class="wrap">
-    <span class="badge"><span class="dot"></span>self-hosted · provider-agnostic · MIT</span>
+    <span class="badge"><span class="dot"></span>self-hosted · provider-agnostic · propriétaire</span>
     <h1>Galahad — a <span class="g">self-hosted team</span> of autonomous AI agents.</h1>
-    <p class="lead">Un seul VPS. Pilotée depuis <b style="color:var(--ink)">Telegram</b>. Agnostique à ton fournisseur de LLM. Une petite équipe d'agents coordonnés qui gèrent projets, code et infra — chez toi, garde-fous dans le code, tes données restent à la maison.</p>
-    <div class="cta">
-      <a class="btn p" href="#quickstart">Self-host in 60 seconds →</a>
-      <a class="btn" href="https://github.com/xtincell/galahad" target="_blank" rel="noopener">Voir le code sur GitHub ↗</a>
-    </div>
-    <div class="tags">
-      <span><b>1</b> VPS, tout dessus</span>
-      <span><b>3</b> rôles + bridge optionnel</span>
-      <span><b>0</b> port entrant</span>
-      <span><b>~0</b> coût au repos</span>
-    </div>
+    <p class="lead">Un moteur commun pour surveiller l’infrastructure, exécuter des procédures et retrouver les résultats délégués. Tu choisis les rôles, le fournisseur et les décisions confiées à l’IA. Les outils déterministes peuvent fonctionner sans agent permanent ; les agents configurés se pilotent depuis <b style="color:var(--ink)">Telegram</b>.</p>
+    <div class="cta"><a class="btn p" href="#quickstart">Voir l’installation →</a><a class="btn" href="mailto:xtincell@gmail.com?subject=Galahad%20Acces%20au%20code">Demander l’accès au code →</a></div>
+    <div class="tags"><span><b>1</b> moteur commun</span><span><b>3</b> rôles + bridge facultatif</span><span><b>0</b> port entrant dans le moteur agent</span><span><b>0</b> token pour les contrôles shell</span></div>
   </div></header>
 
   <section id="roles"><div class="wrap">
-    <div class="eyebrow">L'équipe</div>
-    <h2>Trois rôles, une seule image</h2>
-    <p class="sub">Un seul moteur ; chaque conteneur c'est le même code qui porte un rôle différent. Tu leur parles sur Telegram.</p>
+    <div class="eyebrow">L’équipe</div><h2>Trois rôles, une seule image</h2>
+    <p class="sub">Les rôles portent des responsabilités distinctes. Leur configuration détermine cadence, outils et autorisations ; le modèle reste choisi pour l’installation.</p>
     <div class="team">
-      <div class="agent"><div class="ico">🎩</div><h3>Chef</h3><div class="role">Orchestrator</div><p>Le coordinateur, face à l'humain. Il route le travail, coordonne les autres et délègue le dur.</p><div class="brain">any OpenAI-compatible endpoint</div></div>
-      <div class="agent"><div class="ico">🛡️</div><h3>Guardian</h3><div class="role">Health · QA</div><p>Patrouille santé + revue de code. La patrouille de routine est un pur check shell (zéro token) ; le cerveau ne se réveille que sur anomalie.</p><div class="brain">cheap model · wakes on anomaly</div></div>
-      <div class="agent"><div class="ico">🛰️</div><h3>Traveler</h3><div class="role">Explore · Build</div><p>Explorateur autonome et bâtisseur de nuit. Il poursuit des objectifs, inspecte la machine — et demande avant de livrer.</p><div class="brain">asks before it ships</div></div>
-      <div class="agent opt"><div class="ico">🧠</div><h3>Claude bridge</h3><div class="role">Optional</div><p>Claude convocable pour le vrai dev, sous le même garde-fou que toute action payante. Éteint par défaut.</p><div class="brain">Anthropic · gated · opt-in</div></div>
+      <div class="agent"><div class="ico">🎩</div><h3>Chef · Dan</h3><div class="role">Coordination</div><p>Le coordinateur face à l’humain. Il route le travail et délègue selon le contexte et les accès configurés.</p><div class="brain">fournisseur compatible au choix</div></div>
+      <div class="agent"><div class="ico">🛡️</div><h3>Guardian · Talos</h3><div class="role">Santé · QA</div><p>Patrouille santé et inspection. Les contrôles shell utilisent zéro jeton de chat ; le diagnostic IA dépend de la politique configurée.</p><div class="brain">veille et diagnostic configurables</div></div>
+      <div class="agent"><div class="ico">🛰️</div><h3>Traveler · Hulysse</h3><div class="role">Exploration · Construction</div><p>Explore l’installation et prépare l’avancement des objectifs. Ses trouvailles reviennent à l’autorité compétente pour décision.</p><div class="brain">veille et autorisations configurables</div></div>
+      <div class="agent opt"><div class="ico">🧠</div><h3>Claude bridge</h3><div class="role">Facultatif</div><p>Claude convocable pour le développement. Le bridge a ses propres accès ; ses appels ne sont pas couverts par le garde shell du moteur.</p><div class="brain">accès distincts · activé par configuration</div></div>
     </div>
   </div></section>
 
   <section id="why" style="background:var(--bg2)"><div class="wrap">
-    <div class="eyebrow">Pourquoi Galahad</div>
-    <h2>Ton serveur, ton fournisseur, tes règles</h2>
-    <p class="sub">La plupart des « produits à agents » sont le cloud d'un autre qui détient tes clés, ton code et tes données. Galahad inverse ça.</p>
+    <div class="eyebrow">Pourquoi Galahad</div><h2>Ton serveur, ton fournisseur, tes règles</h2>
+    <p class="sub">Galahad entretient les moyens de travail. La marque, le projet et la campagne gardent leurs autorités métier ; les agents consultent leur contexte et rendent leurs résultats.</p>
     <div class="feats">
-      <div class="feat"><div class="fi">🔌</div><h3>Cerveau agnostique</h3><p>Pointe <code>LLM_BASE_URL</code> vers n'importe quel endpoint OpenAI-compatible — Ollama, OpenAI, OpenRouter, Together, Groq. Change de modèle à chaud avec <code>/brain</code>. Aucun lock-in.</p></div>
-      <div class="feat"><div class="fi">💸</div><h3>Économe par design</h3><p>La patrouille de routine coûte zéro token ; les modèles forts seulement à la demande ; Claude seulement pour les pics. Coût quasi nul au repos.</p></div>
-      <div class="feat"><div class="fi">🔒</div><h3>Garde-fous dans le code</h3><p>Toute action destructive ou payante est refusée sans un « oui » explicite de l'opérateur dans les 5 dernières minutes. Imposé dans <code>hooks.js</code>, pas par la politesse d'un prompt.</p></div>
-      <div class="feat"><div class="fi">📓</div><h3>Mémoire fichiers</h3><p>Cartes markdown + un index injecté au réveil. La continuité survit aux redémarrages ; tout est <code>grep</code>-able. Journaux en JSONL, entièrement auditables.</p></div>
-      <div class="feat"><div class="fi">🛡️</div><h3>Aucun port entrant</h3><p>Les agents sortent en long-polling Telegram. Rien à exposer, aucune surface d'attaque entrante à défendre.</p></div>
-      <div class="feat"><div class="fi">⚡</div><h3>Une commande</h3><p>Un moteur léger (~500 lignes de Node sans dépendances). <code>./install.sh</code> — Docker + Compose et c'est en ligne.</p></div>
+      <div class="feat"><div class="fi">🔌</div><h3>Fournisseur choisi</h3><p>Un endpoint compatible permet de changer de modèle. Le stockage reste sur ton serveur ; prompts et contexte partent vers le fournisseur choisi, les messages passent par Telegram.</p></div>
+      <div class="feat"><div class="fi">💸</div><h3>Coût explicite</h3><p>Les contrôles shell utilisent zéro jeton de chat. Diagnostic, exploration, embeddings et bridge ont leurs coûts propres. Le coût mensuel complet reste à mesurer.</p></div>
+      <div class="feat"><div class="fi">🔒</div><h3>Autorisations configurées</h3><p>Les commandes shell reconnues comme destructives exigent une autorisation, par consentement ou fenêtre configurée. Les autres intégrations ont leurs contrats et accès distincts.</p></div>
+      <div class="feat"><div class="fi">📓</div><h3>Contexte et traces</h3><p>Cartes markdown, index et journaux conservent le contexte du moteur. Danmem partage observations et travaux ; leurs résultats restent des éléments à recevoir.</p></div>
+      <div class="feat"><div class="fi">🛡️</div><h3>Surfaces identifiées</h3><p>Le moteur agent utilise le long-polling Telegram. Bridge, mémoire, cockpit et administration ont des surfaces distinctes dont les accès doivent être configurés.</p></div>
+      <div class="feat"><div class="fi">⚡</div><h3>Procédures déterministes</h3><p>Un moteur Node sans dépendance npm porte préconditions, étapes et vérification. Les points de décision IA sont explicites ; la bibliothèque se charge sans agent permanent.</p></div>
     </div>
   </div></section>
 
   <section id="quickstart"><div class="wrap">
-    <div class="eyebrow">Quickstart</div>
-    <h2>En ligne en trois lignes</h2>
-    <p class="sub">Un VPS Linux avec Docker, trois bots Telegram (un par agent, via @BotFather), et une clé pour un endpoint LLM OpenAI-compatible.</p>
-    <div class="qs">
-      <div class="bar"><i style="background:#E88B7A"></i><i style="background:#E8B45A"></i><i style="background:#7FD8A0"></i><span class="t">bash — your VPS</span></div>
-<pre><code><span class="c"># clone & lance — install.sh demande les tokens, le chat id, l'endpoint LLM</span>
-<span class="p">git</span> clone https://github.com/xtincell/galahad.git
+    <div class="eyebrow">Installation</div><h2>Configurer puis recevoir l’instance</h2>
+    <p class="sub">Pour le mode agent : VPS Linux avec Docker, bots Telegram et fournisseur compatible. Le dépôt est privé et son accès nécessite une autorisation. L’installateur prépare la configuration ; droits, restauration et résultats doivent être reçus sur l’instance.</p>
+    <div class="qs"><div class="bar"><i style="background:#E88B7A"></i><i style="background:#E8B45A"></i><i style="background:#7FD8A0"></i><span class="t">bash — ton VPS</span></div>
+<pre><code><span class="p">git</span> clone https://github.com/xtincell/galahad.git
 <span class="p">cd</span> galahad
-<span class="p">./install.sh</span>
-
-<span class="c"># …ou à la main</span>
-<span class="p">cp</span> .env.example .env          <span class="c"># remplis tes valeurs</span>
-<span class="p">docker</span> compose up -d          <span class="c"># les trois agents</span>
-<span class="p">docker</span> compose --profile bridge up -d   <span class="c"># + le bridge Claude optionnel</span></code></pre>
-    </div>
-    <p class="qs-note">Puis écris à un bot sur Telegram et envoie <code style="font-family:var(--mono);color:var(--brass2)">/help</code>.</p>
+<span class="p">./install.sh</span></code></pre></div>
+    <p class="qs-note"><a href="#not">Consulter les réceptions et les limites →</a></p>
   </div></section>
 
   <section id="not" style="background:var(--bg2)"><div class="wrap">
-    <div class="eyebrow">Honnêteté</div>
-    <h2>Ce que Galahad n'est pas</h2>
-    <p class="sub">L'honnêteté est une feature. Galahad ne promet pas la lune — il fait une chose, bien.</p>
+    <div class="eyebrow">Périmètre</div><h2>Des responsabilités et des réceptions distinctes</h2>
+    <p class="sub">Le moteur prépare et exécute des travaux. Les produits métier et leurs opérateurs gardent les décisions de marque, les accords client et les validations de campagne.</p>
     <div class="notgrid">
-      <div class="notcol no">
-        <h3>// n'est PAS</h3>
-        <ul>
-          <li><span class="m">✕</span> un SaaS managé — rien ne tourne dans notre cloud</li>
-          <li><span class="m">✕</span> un studio no-code — c'est du vrai framework à héberger</li>
-          <li><span class="m">✕</span> un AGI ni un « auto-pilote » magique</li>
-          <li><span class="m">✕</span> autonome sans garde-fou — il demande avant de livrer</li>
-          <li><span class="m">✕</span> lié à un fournisseur de LLM unique</li>
-        </ul>
-      </div>
-      <div class="notcol yes">
-        <h3>// EST</h3>
-        <ul>
-          <li><span class="m">✓</span> un petit framework lisible (~500 lignes de Node, zéro dépendance)</li>
-          <li><span class="m">✓</span> auto-hébergé sur ton VPS, tu possèdes tout</li>
-          <li><span class="m">✓</span> agnostique : n'importe quel endpoint OpenAI-compatible</li>
-          <li><span class="m">✓</span> sûr par conception : garde-fous imposés dans le code</li>
-          <li><span class="m">✓</span> auditable : journaux JSONL + mémoire markdown</li>
-        </ul>
-      </div>
+      <div class="notcol yes"><h3>// CAPACITÉS DU MOTEUR</h3><ul><li><span class="m">✓</span> rôles et fournisseur configurables</li><li><span class="m">✓</span> procédures, traces et retours de travaux</li><li><span class="m">✓</span> outils déterministes sans agent permanent</li><li><span class="m">✓</span> code sous accès autorisé et licence propriétaire</li></ul></div>
+      <div class="notcol no"><h3>// RÉCEPTIONS RESTANTES</h3><ul><li><span class="m">→</span> parcours opérateur complets et droits par installation</li><li><span class="m">→</span> mandats précis, arrêt et reprise complète</li><li><span class="m">→</span> restauration, seconde entreprise et continuité</li><li><span class="m">→</span> coûts et engagements de service mesurés</li></ul></div>
     </div>
   </div></section>
 
-  <section id="compare"><div class="wrap">
-    <div class="eyebrow">Galahad vs. agent SaaS</div>
-    <h2>La différence, ligne par ligne</h2>
-    <div class="tblwrap">
-      <table>
-        <thead><tr><th></th><th>Agent SaaS typique</th><th class="g">Galahad</th></tr></thead>
-        <tbody>
-          <tr><td>Hébergement</td><td>Leur cloud</td><td class="g">Ton VPS</td></tr>
-          <tr><td>Tes données</td><td>Quittent la maison</td><td class="g">Restent chez toi</td></tr>
-          <tr><td>Fournisseur LLM</td><td>Verrouillé</td><td class="g">Tout endpoint OpenAI-compatible</td></tr>
-          <tr><td>Coût au repos</td><td>Par siège / par appel</td><td class="g">~zéro (patrol shell, modèles économes)</td></tr>
-          <tr><td>Sûreté</td><td>Fais confiance au prompt</td><td class="g">Garde-fous imposés dans le code</td></tr>
-          <tr><td>Auditabilité</td><td>Boîte noire</td><td class="g">Journaux JSONL + mémoire markdown</td></tr>
-        </tbody>
-      </table>
+  <section id="compare"><div class="wrap"><div class="eyebrow">Exploitation</div><h2>Un périmètre lisible</h2>
+    <div class="tblwrap"><table><thead><tr><th>Élément</th><th>Fonctionnement</th><th class="g">Réception</th></tr></thead><tbody>
+      <tr><td>Hébergement</td><td>Installation sur ton VPS</td><td class="g">Droits et restauration à recevoir</td></tr>
+      <tr><td>Données</td><td>Stockage local ; contexte transmis aux fournisseurs configurés</td><td class="g">Frontières et traitements à vérifier</td></tr>
+      <tr><td>Modèles</td><td>Endpoint compatible et modèle configurables</td><td class="g">Résultat utile et coût à mesurer</td></tr>
+      <tr><td>Patrouille</td><td>Contrôles shell sans jeton de chat</td><td class="g">Diagnostic et veille selon configuration</td></tr>
+      <tr><td>Autorisations</td><td>Gardes ciblées et fenêtres configurées</td><td class="g">Mandat par action et montant à recevoir</td></tr>
+      <tr><td>Traces</td><td>Journaux JSONL, mémoire et retours</td><td class="g">Parcours et reprise à éprouver</td></tr>
+    </tbody></table></div>
+  </div></section>
+
+  <section id="projets"><div class="wrap"><div class="eyebrow">Projets de l’écosystème</div><h2>Des produits distincts, une infrastructure commune</h2>
+    <p class="sub">Chaque projet garde son rôle, ses données et ses décisions. Galahad contribue aux moyens de développement et d’exploitation.</p>
+    <div class="feats">
+      <a class="feat" href="https://kinara.powerupgraders.com" target="_blank" rel="noopener"><div class="fi">🎮</div><h3>Neo-Kinara ↗</h3><p>cRPG narratif : magie ancestrale, néons afro-futuristes et Griot-MJ.</p></a>
+      <a class="feat" href="https://atlas.powerupgraders.com" target="_blank" rel="noopener"><div class="fi">🎼</div><h3>Atlas of Recorded Sound ↗</h3><p>Cartographie interactive du son enregistré : filiations, fusions et influences.</p></a>
+      <a class="feat" href="https://folio.powerupgraders.com" target="_blank" rel="noopener"><div class="fi">🎨</div><h3>Folio Xtincell ↗</h3><p>Portfolio créatif : stratégie, direction artistique et exécution.</p></a>
     </div>
   </div></section>
 
-  <section id="pricing" style="background:var(--bg2)"><div class="wrap">
-    <div class="eyebrow">Pricing</div>
-    <h2>Le framework est libre. Le service, à toi de voir.</h2>
-    <p class="sub">Galahad est open source (MIT) — tu peux toujours l'auto-héberger gratuitement. Autour du cœur, trois niveaux.</p>
+  <section id="pricing" style="background:var(--bg2)"><div class="wrap"><div class="eyebrow">Déploiement et service</div><h2>Un service à cadrer sur des preuves</h2>
+    <p class="sub">Le code est propriétaire et son dépôt est privé. Les conditions d’installation et d’exploitation se définissent avec l’éditeur, après réception des droits, de la restauration et des coûts.</p>
     <div class="price">
-      <div class="tier">
-        <div class="pin">Open source</div>
-        <h3>Self-hosted</h3>
-        <div class="amt">Free</div>
-        <p class="desc">Le framework complet. Clone, lance sur ton VPS, possède tout. Support communautaire via GitHub issues.</p>
-        <ul>
-          <li>Les trois rôles + bridge Claude optionnel</li>
-          <li>Provider-agnostic, garde-fous, mémoire fichiers</li>
-          <li>Licence MIT, code entièrement lisible</li>
-          <li>Support communautaire</li>
-        </ul>
-        <a class="btn ghost" href="https://github.com/xtincell/galahad" target="_blank" rel="noopener">Cloner sur GitHub ↗</a>
-      </div>
-      <div class="tier feature">
-        <div class="pin">Le plus choisi</div>
-        <h3>Managed</h3>
-        <div class="amt">dès 49€ <small>/ mois</small></div>
-        <p class="desc">On provisionne et on exploite l'équipe sur ton VPS (ou le nôtre). Tu gardes root et tes données ; on la garde en bonne santé.</p>
-        <ul>
-          <li>Setup + reverse proxy durci + cockpit</li>
-          <li>Routage de modèles, monitoring, mises à jour</li>
-          <li>Canal de support dédié</li>
-          <li>Tu gardes root et tes données</li>
-        </ul>
-        <a class="btn p" href="mailto:xtincell@gmail.com?subject=Galahad%20Managed">Nous contacter →</a>
-      </div>
-      <div class="tier">
-        <div class="pin">Sur mesure</div>
-        <h3>Enterprise</h3>
-        <div class="amt">Custom</div>
-        <p class="desc">Pour les organisations avec des contraintes de conformité ou d'échelle. On construit autour de ton contexte.</p>
-        <ul>
-          <li>Rôles et outils sur mesure</li>
-          <li>Déploiement on-prem / air-gapped</li>
-          <li>SSO, exports d'audit, SLAs</li>
-          <li>Ingénierie dédiée</li>
-        </ul>
-        <a class="btn ghost" href="mailto:xtincell@gmail.com?subject=Galahad%20Enterprise">Parler à l'équipe →</a>
-      </div>
-    </div>
-    <p class="qs-note" style="margin-top:26px">Le code de ce dépôt est et reste MIT. Le pricing est indicatif pour l'offre commerciale autour du cœur open source.</p>
+      <div class="tier"><div class="pin">Accès au code</div><h3>Self-hosted</h3><div class="amt">Évaluation</div><p class="desc">Examiner le moteur, les méthodes et leurs réceptions. La consultation du code ne constitue pas une installation client reçue.</p><ul><li>Trois rôles et bridge facultatif</li><li>Fournisseur et procédures configurables</li><li>Licence propriétaire, accès autorisé</li><li>Réceptions et limites documentées</li></ul><a class="btn ghost" href="mailto:xtincell@gmail.com?subject=Galahad%20Acces%20au%20code">Demander l’accès →</a></div>
+      <div class="tier feature"><div class="pin">Installation dédiée</div><h3>Installation</h3><div class="amt">À cadrer</div><p class="desc">Définir les rôles, accès et traitements utiles à ton entreprise. Chaque installation doit recevoir sa configuration et sa restauration.</p><ul><li>Configuration et accès à recevoir</li><li>Fournisseurs et veille à cadrer</li><li>Support et responsabilités à définir</li><li>Périmètre des données explicite</li></ul><a class="btn p" href="mailto:xtincell@gmail.com?subject=Galahad%20Installation">Nous contacter →</a></div>
+      <div class="tier"><div class="pin">Sur mesure</div><h3>Service opéré</h3><div class="amt">À recevoir</div><p class="desc">Cadrer une exploitation durable autour du dirigeant : continuité, coût, maintien des capacités et réception des résultats.</p><ul><li>Rôles et outils selon les besoins</li><li>Installation isolée et restauration réelle</li><li>Droits, traces et engagements à recevoir</li><li>Coût et conditions mesurés</li></ul><a class="btn ghost" href="mailto:xtincell@gmail.com?subject=Galahad%20Service">Parler à l’équipe →</a></div>
+    </div><p class="qs-note" style="margin-top:26px">Les modalités et le tarif sont à définir sur le périmètre reçu. La licence propriétaire demeure applicable.</p>
   </div></section>
 
-  <section><div class="wrap"><div class="band">
-    <div class="eyebrow">Prêt ?</div>
-    <h2>Ton équipe d'agents, chez toi, en 60 secondes.</h2>
-    <p class="sub">Clone le dépôt, lance <code style="font-family:var(--mono);color:var(--brass2)">./install.sh</code>, parle à tes agents sur Telegram.</p>
-    <div class="cta">
-      <a class="btn p" href="#quickstart">Self-host in 60 seconds →</a>
-      <a class="btn" href="https://github.com/xtincell/galahad" target="_blank" rel="noopener">GitHub ↗</a>
-    </div>
-  </div></div></section>
+  <section><div class="wrap"><div class="band"><div class="eyebrow">Étape suivante</div><h2>Choisir les rôles et recevoir leur fonctionnement.</h2><p class="sub">Examiner le moteur, configurer ses accès et éprouver les parcours utiles à ton installation.</p><div class="cta"><a class="btn p" href="#quickstart">Voir l’installation →</a><a class="btn" href="mailto:xtincell@gmail.com?subject=Galahad%20Acces%20au%20code">Accès au code</a></div></div></div></section>
 
   <footer><div class="wrap">
     <div class="brand" style="font-size:16px"><span class="mk" style="width:24px;height:24px;font-size:12px">✦</span> Galahad</div>
     <div class="fl">
-      <a href="https://github.com/xtincell/galahad" target="_blank" rel="noopener">GitHub</a>
+      <a href="mailto:xtincell@gmail.com?subject=Galahad%20Acces%20au%20code">Accès au code</a>
       <a href="#roles">Roles</a>
-      <a href="#pricing">Pricing</a>
-      <span class="mono">MIT · self-hosted · © 2026</span>
+      <a href="#pricing">Service</a>
+      <span class="mono">Propriétaire · self-hosted · © 2026</span>
     </div>
   </div></footer>
 </main>
