@@ -3,259 +3,353 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Galahad — self-hosted team of autonomous AI agents</title>
-<meta name="description" content="Galahad : une équipe d'agents IA autonomes sur un seul VPS, pilotée depuis Telegram, agnostique à ton fournisseur de LLM. Moteur propriétaire, procédures déterministes et décisions IA facultatives. Stockage local ; traitements externes selon les fournisseurs configurés.">
-<meta property="og:title" content="Galahad — self-hosted team of autonomous AI agents">
-<meta property="og:description" content="Un VPS, pilotage Telegram, provider-agnostic. Trois rôles — Chef, Guardian, Traveler — + un bridge Claude optionnel. Code propriétaire et réceptions documentées.">
+<title>Galahad — Votre agence avance, même quand vous n’y êtes pas</title>
+<meta name="description" content="Content Operations : la production de votre agence suivie en continu, sur un serveur dédié. Vous ne tranchez que ce qui vous revient. À partir de 900 K FCFA par mois, montant fixé au cadrage.">
+<meta property="og:title" content="Galahad — Votre agence avance, même quand vous n’y êtes pas">
+<meta property="og:description" content="Chaque demande suivie jusqu’à la livraison, les retours clients transformés en tâches, l’essentiel sur un écran et sur Telegram. À partir de 900 K FCFA par mois.">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta name="theme-color" content="#0E0C12">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0e0c12; --bg2:#131019; --card:#171320; --card2:#1e1929;
-    --line:#2a2436; --line2:#332b42;
-    --ink:#ECECF5; --ink2:#B4AEC2; --faint:#7C7591;
-    --brass:#E8B45A; --brass2:#F1C876; --brass-d:#B98A38;
-    --ok:#7FD8A0;
+    --encre:#0E0C12; --encre2:#14111B; --carte:#1A1622; --trait:#2B2537; --trait2:#3A3248;
+    --texte:#EEECF4; --texte2:#BDB7CB; --discret:#9A93AD;
+    --laiton:#E8B45A; --laiton2:#F1C876; --laitonf:#C29440;
+    --papier:#F4F2ED; --papier2:#E7E3DA; --graphite:#1D1B22; --graphite2:#55515F;
+    --vert:#2E7D50; --brique:#A9472E;
     --display:'Fraunces',Georgia,'Times New Roman',serif;
-    --sans:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
-    --brass-grad:linear-gradient(120deg,var(--brass2),var(--brass-d));
+    --sans:'Instrument Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --laiton-grad:linear-gradient(120deg,var(--laiton2),#B98A38);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  a{color:inherit;text-decoration:none}
-  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  html{scroll-behavior:smooth;scroll-padding-top:76px}
+  body{background:var(--encre);color:var(--texte);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit}
+  ul,ol{list-style:none}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
   .glow{position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:radial-gradient(720px 520px at 12% -8%,rgba(232,180,90,.13),transparent 60%),
-               radial-gradient(600px 480px at 92% 2%,rgba(232,180,90,.07),transparent 60%),
-               radial-gradient(700px 700px at 50% 116%,rgba(232,180,90,.05),transparent 60%);}
-  main{position:relative;z-index:1}
-  .accent{color:var(--brass)}
+    background:radial-gradient(760px 540px at 8% -10%,rgba(232,180,90,.12),transparent 60%),
+               radial-gradient(620px 520px at 96% 4%,rgba(232,180,90,.06),transparent 60%)}
+  .page{position:relative;z-index:1}
+  a:focus-visible,.btn:focus-visible{outline:2px solid var(--laiton2);outline-offset:3px;border-radius:8px}
+  .evitement{position:absolute;left:12px;top:-60px;z-index:50;background:var(--laiton);color:#1a1305;font-weight:600;padding:10px 16px;border-radius:10px;text-decoration:none}
+  .evitement:focus{top:12px}
 
-  /* nav */
-  nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(14,12,18,.72);border-bottom:1px solid var(--line)}
-  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
-  .brand{display:flex;align-items:center;gap:11px;font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:.01em}
-  .brand .mk{width:30px;height:30px;border-radius:9px;background:var(--brass-grad);display:grid;place-items:center;font-size:15px;color:#1a1305;box-shadow:0 4px 18px rgba(232,180,90,.32)}
-  .nav-links{display:flex;gap:28px;align-items:center;font-size:14.5px;color:var(--ink2)}
-  .nav-links a:hover{color:var(--ink)}
-  @media(max-width:720px){.nav-links a.hideM{display:none}}
-  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;padding:10px 18px;border-radius:11px;border:1px solid var(--line2);background:var(--card);transition:.16s;white-space:nowrap}
-  .btn:hover{border-color:var(--brass-d);background:var(--card2);transform:translateY(-1px)}
-  .btn.p{background:var(--brass-grad);border:0;color:#1a1305;font-weight:700;box-shadow:0 8px 26px rgba(232,180,90,.28)}
-  .btn.p:hover{box-shadow:0 12px 34px rgba(232,180,90,.42)}
-  .btn.ghost{background:transparent}
+  /* navigation */
+  .entete{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(14,12,18,.78);border-bottom:1px solid var(--trait)}
+  .entete .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+  .marque{display:flex;align-items:center;gap:11px;font-family:var(--display);font-weight:600;font-size:20px;text-decoration:none}
+  .marque .mk{width:30px;height:30px;border-radius:9px;background:var(--laiton-grad);display:grid;place-items:center;font-size:15px;color:#1a1305}
+  .liens{display:flex;gap:26px;align-items:center;font-size:15px;color:var(--texte2)}
+  .liens a{text-decoration:none}
+  .liens a:hover{color:var(--texte)}
+  @media(max-width:760px){.liens .ancre{display:none}}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;padding:11px 20px;border-radius:12px;border:1px solid var(--trait2);background:var(--carte);color:var(--texte);text-decoration:none;transition:transform .16s,border-color .16s,box-shadow .16s;white-space:nowrap}
+  .btn:hover{border-color:var(--laitonf);transform:translateY(-1px)}
+  .btn.p{background:var(--laiton-grad);border:0;color:#1a1305;box-shadow:0 8px 26px rgba(232,180,90,.24)}
+  .btn.p:hover{box-shadow:0 12px 34px rgba(232,180,90,.38)}
+  .btn.grand{padding:15px 26px;font-size:16px}
 
   /* hero */
-  .hero{padding:96px 0 74px;text-align:center}
-  .badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--brass);border:1px solid var(--line2);background:rgba(232,180,90,.05);border-radius:999px;padding:6px 15px;margin-bottom:30px}
-  .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 9px var(--ok)}
-  h1{font-family:var(--display);font-size:clamp(38px,6.6vw,70px);font-weight:600;letter-spacing:-.015em;line-height:1.04;max-width:16ch;margin:0 auto}
-  h1 .g{color:var(--brass)}
-  .lead{font-size:clamp(16.5px,2.3vw,20px);color:var(--ink2);max-width:60ch;margin:26px auto 0;line-height:1.62}
-  .cta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin-top:40px}
-  .cta .btn{padding:14px 26px;font-size:15.5px}
-  .tags{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:40px;font-family:var(--mono);font-size:12px;color:var(--faint)}
-  .tags span{border:1px solid var(--line);border-radius:8px;padding:5px 11px}
-  .tags b{color:var(--brass);font-weight:500}
+  .hero{padding:76px 0 96px}
+  .hero .wrap{display:grid;grid-template-columns:1.08fr .92fr;gap:64px;align-items:center}
+  @media(max-width:960px){.hero .wrap{grid-template-columns:1fr;gap:52px}.hero{padding:52px 0 72px}}
+  .surtitre{display:inline-block;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--laitonf)}
+  h1{font-family:var(--display);font-weight:600;font-size:clamp(40px,6.2vw,70px);line-height:1.03;letter-spacing:-.02em;margin-top:18px}
+  h1 em{display:block;font-style:italic;font-weight:500;color:var(--laiton)}
+  .chapo{font-size:clamp(17px,2.1vw,20px);color:var(--texte2);max-width:34em;margin-top:26px;line-height:1.6}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+  .prix-court{margin-top:22px;font-size:15px;color:var(--discret)}
+  .prix-court strong{color:var(--texte);font-weight:600}
 
-  section{padding:74px 0}
-  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-d);text-align:center}
-  h2{font-family:var(--display);font-size:clamp(28px,4.2vw,42px);font-weight:600;letter-spacing:-.01em;text-align:center;margin:14px auto 0;max-width:22ch}
-  .sub{text-align:center;color:var(--ink2);max-width:56ch;margin:18px auto 0;font-size:16.5px}
+  /* écran Direction (illustration) */
+  .ecran{position:relative;animation:lever .7s ease-out .15s both}
+  .ecran-cadre{background:var(--papier);color:var(--graphite);border-radius:18px;padding:22px 22px 44px;box-shadow:0 30px 70px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.06)}
+  .ecran-tete{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--papier2);padding-bottom:12px;margin-bottom:6px}
+  .ecran-titre{font-family:var(--display);font-size:24px;font-weight:600}
+  .ecran-date{font-size:13px;color:var(--graphite2)}
+  .bloc{padding:12px 0;border-bottom:1px solid var(--papier2)}
+  .bloc:last-of-type{border-bottom:0}
+  .bloc-titre{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--graphite2);margin-bottom:8px}
+  .compte{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--brique);color:#fff;font-size:12px;letter-spacing:0}
+  .bloc li{display:flex;gap:10px;align-items:baseline;font-size:15px;line-height:1.45;padding:3px 0}
+  .bloc li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--graphite2);transform:translateY(-1px)}
+  .bloc.arbitrer li::before{background:var(--brique)}
+  .bloc.livre li::before{background:var(--vert)}
+  .bloc li span{margin-left:auto;font-size:13px;color:var(--graphite2);white-space:nowrap;padding-left:8px}
+  .ecran-pied{margin-top:10px;display:inline-block;font-size:14px;font-weight:600;border:1px solid #CFC9BC;border-radius:10px;padding:8px 13px;color:var(--graphite)}
+  .bulle{position:relative;z-index:2;width:min(310px,90%);margin:-26px 0 0 -7%;background:#22324A;color:#F1F4F9;border-radius:16px 16px 16px 4px;padding:13px 16px;box-shadow:0 18px 40px rgba(0,0,0,.45);animation:lever .6s ease-out .75s both}
+  .bulle-de{display:block;font-size:12px;font-weight:600;color:#A9C4E8;margin-bottom:3px}
+  .bulle p{font-size:14.5px;line-height:1.45}
+  .ecran figcaption{margin-top:22px;font-size:13px;color:var(--discret)}
+  @media(max-width:960px){.bulle{margin:-22px 4% 0 auto}}
+  @keyframes lever{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
-  /* roles */
-  .team{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:52px}
-  @media(max-width:900px){.team{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:480px){.team{grid-template-columns:1fr}}
-  .agent{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;overflow:hidden;transition:.18s}
-  .agent:hover{border-color:var(--brass-d);transform:translateY(-3px)}
-  .agent::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:var(--brass-grad);opacity:.75}
-  .agent.opt::before{opacity:.35;background:var(--line2)}
-  .agent .ico{font-size:25px}
-  .agent h3{font-family:var(--display);font-size:19px;font-weight:600;margin:14px 0 3px}
-  .agent .role{font-family:var(--mono);font-size:11px;color:var(--brass);letter-spacing:.05em;text-transform:uppercase}
-  .agent p{color:var(--ink2);font-size:13.5px;margin-top:11px;line-height:1.55}
-  .agent .brain{margin-top:13px;font-family:var(--mono);font-size:11px;color:var(--faint);border-top:1px solid var(--line);padding-top:11px}
+  /* sections */
+  section{padding:92px 0;border-top:1px solid var(--trait)}
+  section.alt{background:var(--encre2)}
+  @media(max-width:760px){section{padding:68px 0}}
+  h2{font-family:var(--display);font-weight:600;font-size:clamp(30px,4.3vw,46px);line-height:1.08;letter-spacing:-.015em;margin-top:14px;max-width:20ch}
+  .intro{color:var(--texte2);max-width:40em;margin-top:18px;font-size:18px}
 
-  /* features */
-  .feats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:52px}
-  @media(max-width:860px){.feats{grid-template-columns:1fr}}
-  .feat{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:26px}
-  .feat .fi{width:42px;height:42px;border-radius:11px;background:rgba(232,180,90,.10);border:1px solid rgba(232,180,90,.22);display:grid;place-items:center;font-size:19px;margin-bottom:16px}
-  .feat h3{font-size:17px;font-weight:700;margin-bottom:8px}
-  .feat p{color:var(--ink2);font-size:14px;line-height:1.58}
-  .feat code{font-family:var(--mono);font-size:12.5px;color:var(--brass2);background:rgba(232,180,90,.08);padding:1px 6px;border-radius:5px}
+  /* constat */
+  .constat .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start}
+  @media(max-width:860px){.constat .wrap{grid-template-columns:1fr;gap:28px}}
+  .douleurs li{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--trait);font-size:18px;color:var(--texte2);line-height:1.5}
+  .douleurs li:first-child{padding-top:0}
+  .douleurs li::before{content:"—";color:var(--laiton);flex:none}
 
-  /* quickstart */
-  .qs{max-width:760px;margin:48px auto 0;background:#0a0810;border:1px solid var(--line2);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4)}
-  .qs .bar{display:flex;align-items:center;gap:8px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--card)}
-  .qs .bar i{width:11px;height:11px;border-radius:50%;display:block}
-  .qs .bar .t{margin-left:10px;font-family:var(--mono);font-size:12px;color:var(--faint)}
-  .qs pre{margin:0;padding:22px 24px;overflow-x:auto}
-  .qs code{font-family:var(--mono);font-size:13.5px;line-height:1.85;color:var(--ink)}
-  .qs .c{color:var(--faint)}
-  .qs .p{color:var(--brass)}
-  .qs-note{text-align:center;color:var(--faint);font-size:13.5px;margin-top:20px}
+  /* ce qui change */
+  .gains{display:grid;grid-template-columns:repeat(3,1fr);gap:40px 36px;margin-top:56px}
+  @media(max-width:960px){.gains{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:620px){.gains{grid-template-columns:1fr;gap:30px}}
+  .gains li{border-top:2px solid var(--laitonf);padding-top:18px}
+  .gains h3{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2;margin-bottom:10px}
+  .gains p{color:var(--texte2);font-size:16px}
 
-  /* NOT section */
-  .notgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:48px;max-width:900px;margin-left:auto;margin-right:auto}
-  @media(max-width:720px){.notgrid{grid-template-columns:1fr}}
-  .notcol{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:26px}
-  .notcol h3{font-size:15px;font-family:var(--mono);letter-spacing:.03em;margin-bottom:16px}
-  .notcol.no h3{color:#E88B7A}
-  .notcol.yes h3{color:var(--ok)}
-  .notcol ul{list-style:none;display:flex;flex-direction:column;gap:11px}
-  .notcol li{font-size:14.5px;color:var(--ink2);display:flex;gap:11px;line-height:1.5}
-  .notcol li .m{flex:none;font-family:var(--mono);font-weight:500}
-  .notcol.no li .m{color:#E88B7A}
-  .notcol.yes li .m{color:var(--ok)}
+  /* fonctionnement */
+  .equipe{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:52px}
+  @media(max-width:960px){.equipe{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.equipe{grid-template-columns:1fr}}
+  .equipe li{background:var(--carte);border:1px solid var(--trait);border-radius:16px;padding:24px}
+  .equipe li.vous{border-color:var(--laitonf);background:linear-gradient(180deg,rgba(232,180,90,.09),var(--carte) 55%)}
+  .fonction{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--laitonf)}
+  .equipe h3{font-family:var(--display);font-weight:600;font-size:22px;margin:8px 0 10px}
+  .equipe p{color:var(--texte2);font-size:15.5px}
+  .precision{margin-top:28px;color:var(--discret);font-size:15px;max-width:52em}
 
-  /* comparison table */
-  .tblwrap{margin:48px auto 0;max-width:860px;overflow-x:auto;border:1px solid var(--line);border-radius:15px}
-  table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:560px}
-  thead th{text-align:left;padding:18px 20px;font-weight:600;background:var(--card);border-bottom:1px solid var(--line2)}
-  thead th.g{color:var(--brass);font-family:var(--display);font-size:16px}
-  thead th:first-child{color:var(--faint);font-weight:500;font-family:var(--mono);font-size:12px;letter-spacing:.03em}
-  tbody td{padding:16px 20px;border-bottom:1px solid var(--line);color:var(--ink2)}
-  tbody tr:last-child td{border-bottom:0}
-  tbody td:first-child{color:var(--ink);font-weight:500}
-  tbody td.g{color:var(--ink);font-weight:600}
-  tbody tr:hover td{background:rgba(232,180,90,.03)}
+  /* démarrage */
+  .etapes{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px;counter-reset:etape}
+  @media(max-width:860px){.etapes{grid-template-columns:1fr}}
+  .etapes li{counter-increment:etape;padding:26px;border:1px solid var(--trait);border-radius:16px}
+  .etapes li::before{content:counter(etape);display:block;font-family:var(--display);font-size:44px;line-height:1;color:var(--laiton);margin-bottom:14px}
+  .etapes h3{font-size:19px;font-weight:600;margin-bottom:8px}
+  .etapes p{color:var(--texte2);font-size:16px}
 
-  /* pricing */
-  .price{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px;align-items:stretch}
-  @media(max-width:860px){.price{grid-template-columns:1fr}}
-  .tier{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px 26px;display:flex;flex-direction:column}
-  .tier.feature{border-color:var(--brass-d);background:linear-gradient(180deg,rgba(232,180,90,.06),var(--card) 42%);box-shadow:0 16px 44px rgba(232,180,90,.10)}
-  .tier .pin{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--brass);margin-bottom:4px;min-height:14px}
-  .tier h3{font-family:var(--display);font-size:22px;font-weight:600;margin-bottom:8px}
-  .tier .amt{font-size:32px;font-weight:700;letter-spacing:-.02em;font-family:var(--display)}
-  .tier .amt small{font-size:14px;color:var(--faint);font-weight:400;font-family:var(--sans)}
-  .tier .desc{color:var(--ink2);font-size:13.5px;margin:12px 0 18px;line-height:1.55}
-  .tier ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px;flex:1}
-  .tier li{font-size:13.5px;color:var(--ink2);display:flex;gap:10px;line-height:1.45}
-  .tier li::before{content:"✓";color:var(--brass);font-weight:700;flex:none}
-  .tier .btn{justify-content:center;width:100%}
+  /* offre */
+  .offre{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:52px;background:var(--carte);border:1px solid var(--laitonf);border-radius:22px;overflow:hidden}
+  @media(max-width:860px){.offre{grid-template-columns:1fr}}
+  .offre-prix{padding:38px 36px;background:linear-gradient(160deg,rgba(232,180,90,.10),transparent 60%)}
+  .offre-prix .nom{font-family:var(--display);font-size:26px;font-weight:600}
+  .offre-prix .resume{color:var(--texte2);font-size:16px;margin-top:6px}
+  .montant{margin-top:30px}
+  .montant .apd{display:block;font-size:15px;color:var(--texte2)}
+  .montant .chiffre{display:block;font-family:var(--display);font-weight:600;font-size:clamp(46px,7vw,64px);line-height:1.05;letter-spacing:-.02em;color:var(--laiton)}
+  .montant .unite{display:block;font-size:17px;color:var(--texte);margin-top:4px}
+  .fourchette{margin-top:18px;font-size:15.5px;color:var(--texte2)}
+  .offre-prix .btn{margin-top:28px}
+  .offre-inclus{padding:38px 36px;border-left:1px solid var(--trait)}
+  @media(max-width:860px){.offre-inclus{border-left:0;border-top:1px solid var(--trait)}.offre-prix,.offre-inclus{padding:30px 24px}}
+  .offre-inclus h3{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--laitonf);margin-bottom:16px}
+  .offre-inclus li{display:flex;gap:12px;padding:9px 0;font-size:16px;line-height:1.45;border-bottom:1px solid var(--trait)}
+  .offre-inclus li:last-child{border-bottom:0}
+  .offre-inclus li::before{content:"✓";color:var(--laiton);font-weight:600;flex:none}
+  .note{margin-top:22px;color:var(--discret);font-size:15px;max-width:52em}
 
-  /* cta band */
-  .band{margin:24px auto 0;background:linear-gradient(120deg,rgba(232,180,90,.11),rgba(232,180,90,.04));border:1px solid var(--line2);border-radius:22px;padding:56px 28px;text-align:center}
-  .band h2{margin:0 auto}
-  footer{border-top:1px solid var(--line);padding:38px 0;color:var(--faint);font-size:13px}
-  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
-  footer .fl{display:flex;gap:22px;align-items:center}
-  footer .fl a:hover{color:var(--ink)}
-  footer .mono{font-family:var(--mono);font-size:11.5px}
+  /* limites */
+  .limites{display:grid;grid-template-columns:1fr 1fr;gap:18px 40px;margin-top:48px}
+  @media(max-width:760px){.limites{grid-template-columns:1fr}}
+  .limites li{padding:18px 0;border-top:1px solid var(--trait);color:var(--texte2);font-size:16px}
+  .limites strong{display:block;color:var(--texte);font-weight:600;font-size:17px;margin-bottom:4px}
+
+  /* appel final */
+  .appel{border-top:1px solid var(--trait);padding:96px 0;text-align:center}
+  .appel h2{margin:14px auto 0;max-width:22ch}
+  .appel .intro{margin:18px auto 0}
+  .appel .actions{justify-content:center}
+  .courriel{margin-top:18px;font-size:15px;color:var(--discret)}
+  .courriel a{color:var(--texte2)}
+
+  footer{border-top:1px solid var(--trait);padding:34px 0;color:var(--discret);font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+  footer nav ul{display:flex;gap:22px;flex-wrap:wrap}
+  footer a{text-decoration:none;display:inline-block;padding:6px 0}
+  footer a:hover{color:var(--texte)}
+
+  @media(prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation:none!important;transition:none!important}
+  }
 </style>
 </head>
 <body>
-<div class="glow"></div>
-<main>
-  <nav><div class="wrap">
-    <div class="brand"><span class="mk">✦</span> Galahad</div>
-    <div class="nav-links">
-      <a href="#roles" class="hideM">Roles</a>
-      <a href="#why" class="hideM">Pourquoi</a>
-      <a href="#projets" class="hideM">Projets</a>
-      <a href="#pricing" class="hideM">Service</a>
-      <a class="btn" href="mailto:xtincell@gmail.com?subject=Galahad%20Acces%20au%20code">Accès au code</a>
-    </div>
-  </div></nav>
-
-  <header class="hero"><div class="wrap">
-    <span class="badge"><span class="dot"></span>self-hosted · provider-agnostic · propriétaire</span>
-    <h1>Galahad — a <span class="g">self-hosted team</span> of autonomous AI agents.</h1>
-    <p class="lead">Un moteur commun pour surveiller l’infrastructure, exécuter des procédures et retrouver les résultats délégués. Tu choisis les rôles, le fournisseur et les décisions confiées à l’IA. Les outils déterministes peuvent fonctionner sans agent permanent ; les agents configurés se pilotent depuis <b style="color:var(--ink)">Telegram</b>.</p>
-    <div class="cta"><a class="btn p" href="#quickstart">Voir l’installation →</a><a class="btn" href="mailto:xtincell@gmail.com?subject=Galahad%20Acces%20au%20code">Demander l’accès au code →</a></div>
-    <div class="tags"><span><b>1</b> moteur commun</span><span><b>3</b> rôles + bridge facultatif</span><span><b>0</b> port entrant dans le moteur agent</span><span><b>0</b> token pour les contrôles shell</span></div>
+<a class="evitement" href="#contenu">Aller au contenu</a>
+<div class="glow" aria-hidden="true"></div>
+<div class="page">
+  <header class="entete"><div class="wrap">
+    <a class="marque" href="#contenu"><span class="mk" aria-hidden="true">✦</span> Galahad</a>
+    <nav class="liens" aria-label="Navigation principale">
+      <a class="ancre" href="#resultats">Ce qui change</a>
+      <a class="ancre" href="#roles">Fonctionnement</a>
+      <a class="ancre" href="#pricing">Prix</a>
+      <a class="btn" href="mailto:xtincell@gmail.com?subject=Galahad%20%E2%80%94%20Content%20Operations">Prendre contact</a>
+    </nav>
   </div></header>
 
-  <section id="roles"><div class="wrap">
-    <div class="eyebrow">L’équipe</div><h2>Trois rôles, une seule image</h2>
-    <p class="sub">Les rôles portent des responsabilités distinctes. Leur configuration détermine cadence, outils et autorisations ; le modèle reste choisi pour l’installation.</p>
-    <div class="team">
-      <div class="agent"><div class="ico">🎩</div><h3>Chef · Dan</h3><div class="role">Coordination</div><p>Le coordinateur face à l’humain. Il route le travail et délègue selon le contexte et les accès configurés.</p><div class="brain">fournisseur compatible au choix</div></div>
-      <div class="agent"><div class="ico">🛡️</div><h3>Guardian · Talos</h3><div class="role">Santé · QA</div><p>Patrouille santé et inspection. Les contrôles shell utilisent zéro jeton de chat ; le diagnostic IA dépend de la politique configurée.</p><div class="brain">veille et diagnostic configurables</div></div>
-      <div class="agent"><div class="ico">🛰️</div><h3>Traveler · Hulysse</h3><div class="role">Exploration · Construction</div><p>Explore l’installation et prépare l’avancement des objectifs. Ses trouvailles reviennent à l’autorité compétente pour décision.</p><div class="brain">veille et autorisations configurables</div></div>
-      <div class="agent opt"><div class="ico">🧠</div><h3>Claude bridge</h3><div class="role">Facultatif</div><p>Claude convocable pour le développement. Le bridge a ses propres accès ; ses appels ne sont pas couverts par le garde shell du moteur.</p><div class="brain">accès distincts · activé par configuration</div></div>
-    </div>
-  </div></section>
+  <main id="contenu">
+    <div class="hero"><div class="wrap">
+      <div>
+        <span class="surtitre"><span lang="en">Content Operations</span> · pour les dirigeants d’agence</span>
+        <h1>Votre agence avance. <em>Même quand vous n’y êtes pas.</em></h1>
+        <p class="chapo">Chaque demande est suivie jusqu’à la livraison, les retours clients deviennent des tâches, la production continue. Vous voyez l’essentiel sur un écran et sur votre téléphone, et vous ne tranchez que ce qui vous revient.</p>
+        <div class="actions">
+          <a class="btn p grand" href="mailto:xtincell@gmail.com?subject=Galahad%20%E2%80%94%20Content%20Operations">Prendre contact</a>
+          <a class="btn grand" href="#pricing">Voir le prix</a>
+        </div>
+        <p class="prix-court"><strong>À partir de 900&nbsp;K&nbsp;FCFA par mois</strong> · montant fixé au cadrage</p>
+      </div>
 
-  <section id="why" style="background:var(--bg2)"><div class="wrap">
-    <div class="eyebrow">Pourquoi Galahad</div><h2>Ton serveur, ton fournisseur, tes règles</h2>
-    <p class="sub">Galahad entretient les moyens de travail. La marque, le projet et la campagne gardent leurs autorités métier ; les agents consultent leur contexte et rendent leurs résultats.</p>
-    <div class="feats">
-      <div class="feat"><div class="fi">🔌</div><h3>Fournisseur choisi</h3><p>Un endpoint compatible permet de changer de modèle. Le stockage reste sur ton serveur ; prompts et contexte partent vers le fournisseur choisi, les messages passent par Telegram.</p></div>
-      <div class="feat"><div class="fi">💸</div><h3>Coût explicite</h3><p>Les contrôles shell utilisent zéro jeton de chat. Diagnostic, exploration, embeddings et bridge ont leurs coûts propres. Le coût mensuel complet reste à mesurer.</p></div>
-      <div class="feat"><div class="fi">🔒</div><h3>Autorisations configurées</h3><p>Les commandes shell reconnues comme destructives exigent une autorisation, par consentement ou fenêtre configurée. Les autres intégrations ont leurs contrats et accès distincts.</p></div>
-      <div class="feat"><div class="fi">📓</div><h3>Contexte et traces</h3><p>Cartes markdown, index et journaux conservent le contexte du moteur. Danmem partage observations et travaux ; leurs résultats restent des éléments à recevoir.</p></div>
-      <div class="feat"><div class="fi">🛡️</div><h3>Surfaces identifiées</h3><p>Le moteur agent utilise le long-polling Telegram. Bridge, mémoire, cockpit et administration ont des surfaces distinctes dont les accès doivent être configurés.</p></div>
-      <div class="feat"><div class="fi">⚡</div><h3>Procédures déterministes</h3><p>Un moteur Node sans dépendance npm porte préconditions, étapes et vérification. Les points de décision IA sont explicites ; la bibliothèque se charge sans agent permanent.</p></div>
-    </div>
-  </div></section>
+      <figure class="ecran" aria-labelledby="ecran-legende">
+        <div class="ecran-cadre">
+          <div class="ecran-tete"><span class="ecran-titre">L’essentiel</span><span class="ecran-date">Lundi, 8&nbsp;h</span></div>
+          <div class="bloc arbitrer">
+            <p class="bloc-titre">À arbitrer <span class="compte">2</span></p>
+            <ul>
+              <li>Visuel de campagne&nbsp;: choisir entre deux pistes</li>
+              <li>Retour client&nbsp;: changer l’accroche&nbsp;?</li>
+            </ul>
+          </div>
+          <div class="bloc">
+            <p class="bloc-titre">À livrer d’ici 7 jours</p>
+            <ul>
+              <li>Calendrier éditorial de décembre <span>jeudi</span></li>
+              <li>Vidéo courte, version 2 <span>vendredi</span></li>
+            </ul>
+          </div>
+          <div class="bloc livre">
+            <p class="bloc-titre">Livré ces 7 derniers jours</p>
+            <ul>
+              <li>Déclinaisons réseaux sociaux</li>
+              <li>Bilan mensuel de la marque</li>
+            </ul>
+          </div>
+          <span class="ecran-pied">Transmettre un retour client</span>
+        </div>
+        <div class="bulle">
+          <span class="bulle-de">Telegram · le coordinateur</span>
+          <p>Une décision vous attend&nbsp;: la piste du visuel de campagne.</p>
+        </div>
+        <figcaption id="ecran-legende">Illustration de l’écran Direction et d’un message Telegram. Exemple fictif.</figcaption>
+      </figure>
+    </div></div>
 
-  <section id="quickstart"><div class="wrap">
-    <div class="eyebrow">Installation</div><h2>Configurer puis recevoir l’instance</h2>
-    <p class="sub">Pour le mode agent : VPS Linux avec Docker, bots Telegram et fournisseur compatible. Le dépôt est privé et son accès nécessite une autorisation. L’installateur prépare la configuration ; droits, restauration et résultats doivent être reçus sur l’instance.</p>
-    <div class="qs"><div class="bar"><i style="background:#E88B7A"></i><i style="background:#E8B45A"></i><i style="background:#7FD8A0"></i><span class="t">bash — ton VPS</span></div>
-<pre><code><span class="p">git</span> clone https://github.com/xtincell/galahad.git
-<span class="p">cd</span> galahad
-<span class="p">./install.sh</span></code></pre></div>
-    <p class="qs-note"><a href="#not">Consulter les réceptions et les limites →</a></p>
-  </div></section>
+    <section class="constat alt" aria-labelledby="constat-titre"><div class="wrap">
+      <div>
+        <span class="surtitre">Le constat</span>
+        <h2 id="constat-titre">Aujourd’hui, tout passe par vous.</h2>
+      </div>
+      <ul class="douleurs">
+        <li>Un brief attend votre relecture avant de partir en production.</li>
+        <li>Les retours clients arrivent par WhatsApp, par e-mail, de vive voix, et quelqu’un doit les retranscrire.</li>
+        <li>Pour savoir ce qui sera livré cette semaine, il faut demander.</li>
+        <li>Une semaine d’absence, et les décisions s’empilent sur votre bureau.</li>
+      </ul>
+    </div></section>
 
-  <section id="not" style="background:var(--bg2)"><div class="wrap">
-    <div class="eyebrow">Périmètre</div><h2>Des responsabilités et des réceptions distinctes</h2>
-    <p class="sub">Le moteur prépare et exécute des travaux. Les produits métier et leurs opérateurs gardent les décisions de marque, les accords client et les validations de campagne.</p>
-    <div class="notgrid">
-      <div class="notcol yes"><h3>// CAPACITÉS DU MOTEUR</h3><ul><li><span class="m">✓</span> rôles et fournisseur configurables</li><li><span class="m">✓</span> procédures, traces et retours de travaux</li><li><span class="m">✓</span> outils déterministes sans agent permanent</li><li><span class="m">✓</span> code sous accès autorisé et licence propriétaire</li></ul></div>
-      <div class="notcol no"><h3>// RÉCEPTIONS RESTANTES</h3><ul><li><span class="m">→</span> parcours opérateur complets et droits par installation</li><li><span class="m">→</span> mandats précis, arrêt et reprise complète</li><li><span class="m">→</span> restauration, seconde entreprise et continuité</li><li><span class="m">→</span> coûts et engagements de service mesurés</li></ul></div>
-    </div>
-  </div></section>
+    <section id="resultats" aria-labelledby="resultats-titre"><div class="wrap">
+      <span class="surtitre">Ce qui change</span>
+      <h2 id="resultats-titre">La production tourne. Vous gardez la main.</h2>
+      <ul class="gains">
+        <li><h3>Chaque demande a son suivi</h3><p>Une demande devient une tâche, avec un responsable, une échéance et un statut, de la commande à la livraison.</p></li>
+        <li><h3>Les retours clients ne se perdent plus</h3><p>Collez le retour tel qu’il est arrivé&nbsp;: il est découpé en tâches, rattachées au projet concerné. Rien n’est validé sans relecture par votre équipe&nbsp;; si la lecture automatique échoue, le texte est gardé tel quel, à trier.</p></li>
+        <li><h3>L’essentiel tient sur un écran</h3><p>L’écran Direction montre ce qui attend votre arbitrage, ce qui doit être livré dans les sept jours et ce qui l’a été la semaine passée.</p></li>
+        <li><h3>Vous ne tranchez que ce qui vous revient</h3><p>Quand une étape demande une décision, le travail s’arrête et vous présente ce qui a été constaté. Vous tranchez, il reprend sans refaire ce qui est déjà fait.</p></li>
+        <li><h3>Rien d’engageant sans votre accord</h3><p>Avant une action risquée ou payante, et avant de livrer, l’équipe vous demande un oui explicite, sur Telegram.</p></li>
+        <li><h3>Le serveur est surveillé</h3><p>Une ronde régulière vérifie l’espace disque, la mémoire et les journaux d’erreurs. Une anomalie, ou un contrôle qui n’a pas pu se faire, déclenche une alerte. Quand tout va bien, silence.</p></li>
+      </ul>
+    </div></section>
 
-  <section id="compare"><div class="wrap"><div class="eyebrow">Exploitation</div><h2>Un périmètre lisible</h2>
-    <div class="tblwrap"><table><thead><tr><th>Élément</th><th>Fonctionnement</th><th class="g">Réception</th></tr></thead><tbody>
-      <tr><td>Hébergement</td><td>Installation sur ton VPS</td><td class="g">Droits et restauration à recevoir</td></tr>
-      <tr><td>Données</td><td>Stockage local ; contexte transmis aux fournisseurs configurés</td><td class="g">Frontières et traitements à vérifier</td></tr>
-      <tr><td>Modèles</td><td>Endpoint compatible et modèle configurables</td><td class="g">Résultat utile et coût à mesurer</td></tr>
-      <tr><td>Patrouille</td><td>Contrôles shell sans jeton de chat</td><td class="g">Diagnostic et veille selon configuration</td></tr>
-      <tr><td>Autorisations</td><td>Gardes ciblées et fenêtres configurées</td><td class="g">Mandat par action et montant à recevoir</td></tr>
-      <tr><td>Traces</td><td>Journaux JSONL, mémoire et retours</td><td class="g">Parcours et reprise à éprouver</td></tr>
-    </tbody></table></div>
-  </div></section>
+    <section id="roles" class="alt" aria-labelledby="roles-titre"><div class="wrap">
+      <span class="surtitre">Fonctionnement</span>
+      <h2 id="roles-titre">Une petite équipe sur un serveur à votre agence</h2>
+      <p class="intro">Trois agents logiciels, appuyés sur un modèle d’IA, travaillent sur un serveur dédié à votre agence et vous parlent sur Telegram. Le dernier mot reste le vôtre.</p>
+      <ul class="equipe">
+        <li><span class="fonction">Coordination</span><h3>Le coordinateur</h3><p>Reçoit vos demandes, répartit le travail et vous rend compte. Demandez où en est un projet&nbsp;: il consulte le suivi et répond. Un échec est annoncé comme un échec.</p></li>
+        <li><span class="fonction">Surveillance</span><h3>Le gardien</h3><p>Fait sa ronde à rythme fixe, tient à jour l’état du serveur et vous alerte dès qu’un seuil est dépassé. Il signale, il ne corrige pas de lui-même.</p></li>
+        <li><span class="fonction">Avancement</span><h3>L’éclaireur</h3><p>Fait avancer les objectifs que vous lui confiez, y compris la nuit, et vous demande validation avant tout livrable.</p></li>
+        <li class="vous"><span class="fonction">Décision</span><h3>Vous</h3><p>Les choix de marque, les accords avec vos clients et la validation des créations restent entre vos mains. L’équipe prépare, vous décidez.</p></li>
+      </ul>
+      <p class="precision">Les contrôles de routine se font sans IA. Mémoire et journaux restent sur le serveur de votre agence&nbsp;: le contexte survit aux redémarrages et les actions sont journalisées.</p>
+    </div></section>
 
-  <section id="projets"><div class="wrap"><div class="eyebrow">Projets de l’écosystème</div><h2>Des produits distincts, une infrastructure commune</h2>
-    <p class="sub">Chaque projet garde son rôle, ses données et ses décisions. Galahad contribue aux moyens de développement et d’exploitation.</p>
-    <div class="feats">
-      <a class="feat" href="https://kinara.powerupgraders.com" target="_blank" rel="noopener"><div class="fi">🎮</div><h3>Neo-Kinara ↗</h3><p>cRPG narratif : magie ancestrale, néons afro-futuristes et Griot-MJ.</p></a>
-      <a class="feat" href="https://atlas.powerupgraders.com" target="_blank" rel="noopener"><div class="fi">🎼</div><h3>Atlas of Recorded Sound ↗</h3><p>Cartographie interactive du son enregistré : filiations, fusions et influences.</p></a>
-      <a class="feat" href="https://folio.powerupgraders.com" target="_blank" rel="noopener"><div class="fi">🎨</div><h3>Folio Xtincell ↗</h3><p>Portfolio créatif : stratégie, direction artistique et exécution.</p></a>
-    </div>
-  </div></section>
+    <section id="demarrage" aria-labelledby="demarrage-titre"><div class="wrap">
+      <span class="surtitre">Démarrage</span>
+      <h2 id="demarrage-titre">Trois étapes, dans cet ordre</h2>
+      <ol class="etapes">
+        <li><h3>Cadrage</h3><p>On regarde votre production réelle&nbsp;: clients, types de contenus, volumes, qui décide quoi. On écrit ensemble ce qui compte comme livré, et on fixe le prix.</p></li>
+        <li><h3>Mise en place</h3><p>Installation sur un serveur dédié à votre agence, branchement de Telegram et du suivi, reprise de vos projets en cours.</p></li>
+        <li><h3>Production continue</h3><p>Le suivi tourne chaque jour. Chaque mois, le relevé de ce qui a été livré sert de base pour ajuster.</p></li>
+      </ol>
+    </div></section>
 
-  <section id="pricing" style="background:var(--bg2)"><div class="wrap"><div class="eyebrow">Déploiement et service</div><h2>Un service à cadrer sur des preuves</h2>
-    <p class="sub">Le code est propriétaire et son dépôt est privé. Les conditions d’installation et d’exploitation se définissent avec l’éditeur, après réception des droits, de la restauration et des coûts.</p>
-    <div class="price">
-      <div class="tier"><div class="pin">Accès au code</div><h3>Self-hosted</h3><div class="amt">Évaluation</div><p class="desc">Examiner le moteur, les méthodes et leurs réceptions. La consultation du code ne constitue pas une installation client reçue.</p><ul><li>Trois rôles et bridge facultatif</li><li>Fournisseur et procédures configurables</li><li>Licence propriétaire, accès autorisé</li><li>Réceptions et limites documentées</li></ul><a class="btn ghost" href="mailto:xtincell@gmail.com?subject=Galahad%20Acces%20au%20code">Demander l’accès →</a></div>
-      <div class="tier feature"><div class="pin">Installation dédiée</div><h3>Installation</h3><div class="amt">À cadrer</div><p class="desc">Définir les rôles, accès et traitements utiles à ton entreprise. Chaque installation doit recevoir sa configuration et sa restauration.</p><ul><li>Configuration et accès à recevoir</li><li>Fournisseurs et veille à cadrer</li><li>Support et responsabilités à définir</li><li>Périmètre des données explicite</li></ul><a class="btn p" href="mailto:xtincell@gmail.com?subject=Galahad%20Installation">Nous contacter →</a></div>
-      <div class="tier"><div class="pin">Sur mesure</div><h3>Service opéré</h3><div class="amt">À recevoir</div><p class="desc">Cadrer une exploitation durable autour du dirigeant : continuité, coût, maintien des capacités et réception des résultats.</p><ul><li>Rôles et outils selon les besoins</li><li>Installation isolée et restauration réelle</li><li>Droits, traces et engagements à recevoir</li><li>Coût et conditions mesurés</li></ul><a class="btn ghost" href="mailto:xtincell@gmail.com?subject=Galahad%20Service">Parler à l’équipe →</a></div>
-    </div><p class="qs-note" style="margin-top:26px">Les modalités et le tarif sont à définir sur le périmètre reçu. La licence propriétaire demeure applicable.</p>
-  </div></section>
+    <section id="pricing" class="alt" aria-labelledby="pricing-titre"><div class="wrap">
+      <span class="surtitre">Prix</span>
+      <h2 id="pricing-titre">Un abonnement mensuel, fixé sur votre périmètre</h2>
+      <div class="offre">
+        <div class="offre-prix">
+          <p class="nom" lang="en">Content Operations</p>
+          <p class="resume">La production de votre agence, suivie en continu.</p>
+          <p class="montant">
+            <span class="apd">à partir de</span>
+            <span class="chiffre">900&nbsp;K&nbsp;FCFA</span>
+            <span class="unite">par mois</span>
+          </p>
+          <p class="fourchette">Fourchette indicative&nbsp;: de 900&nbsp;K à 3&nbsp;M&nbsp;FCFA par mois, selon le volume et le périmètre définis au cadrage.</p>
+          <a class="btn p grand" href="mailto:xtincell@gmail.com?subject=Galahad%20%E2%80%94%20Cadrage%20Content%20Operations">Demander un cadrage</a>
+        </div>
+        <div class="offre-inclus">
+          <h3>Ce que l’abonnement couvre</h3>
+          <ul>
+            <li>L’installation sur un serveur dédié à votre agence</li>
+            <li>Le suivi de chaque demande, de la commande à la livraison</li>
+            <li>Les retours clients transformés en tâches à valider</li>
+            <li>L’écran Direction&nbsp;: à arbitrer, à livrer, livré</li>
+            <li>Les alertes et demandes de validation sur Telegram</li>
+            <li>La surveillance du serveur, avec mémoire et journaux conservés chez vous</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">Le montant exact, ce qui est inclus (hébergement, fournisseur d’IA) et les critères de livraison sont fixés par écrit au cadrage, avant tout engagement.</p>
+    </div></section>
 
-  <section><div class="wrap"><div class="band"><div class="eyebrow">Étape suivante</div><h2>Choisir les rôles et recevoir leur fonctionnement.</h2><p class="sub">Examiner le moteur, configurer ses accès et éprouver les parcours utiles à ton installation.</p><div class="cta"><a class="btn p" href="#quickstart">Voir l’installation →</a><a class="btn" href="mailto:xtincell@gmail.com?subject=Galahad%20Acces%20au%20code">Accès au code</a></div></div></div></section>
+    <section id="limites" aria-labelledby="limites-titre"><div class="wrap">
+      <span class="surtitre">Les règles du jeu</span>
+      <h2 id="limites-titre">Ce que nous ne promettons pas</h2>
+      <ul class="limites">
+        <li><strong>Pas de résultat garanti d’avance.</strong>On part de votre production réelle. Ce qui compte comme livré s’écrit au cadrage, puis se constate chaque mois.</li>
+        <li><strong>Pas de décision à votre place.</strong>L’équipe prépare et signale. La marque, les accords client et la validation des créations restent les vôtres.</li>
+        <li><strong>Pas de délégation automatique.</strong>Les demandes d’accord couvrent les actions risquées connues. Elles ne remplacent pas une délégation écrite, précise, par action et par montant.</li>
+        <li><strong>Vos données ne restent pas toutes sur place.</strong>Elles sont stockées sur le serveur de votre agence&nbsp;; les textes soumis à l’IA passent par le fournisseur choisi avec vous, et les messages par Telegram.</li>
+        <li><strong>Pas d’engagement de service implicite.</strong>Disponibilité, sauvegardes et assistance se définissent par écrit au cadrage.</li>
+      </ul>
+    </div></section>
+
+    <div class="appel"><div class="wrap">
+      <span class="surtitre">Premier échange</span>
+      <h2>Parlons de ce qui, aujourd’hui, attend votre retour.</h2>
+      <p class="intro">Un premier échange pour regarder votre production et voir si l’offre s’y applique.</p>
+      <div class="actions">
+        <a class="btn p grand" href="mailto:xtincell@gmail.com?subject=Galahad%20%E2%80%94%20Content%20Operations">Prendre contact</a>
+      </div>
+      <p class="courriel">Ou écrivez directement à <a href="mailto:xtincell@gmail.com?subject=Galahad%20%E2%80%94%20Content%20Operations">xtincell@gmail.com</a></p>
+    </div></div>
+  </main>
 
   <footer><div class="wrap">
-    <div class="brand" style="font-size:16px"><span class="mk" style="width:24px;height:24px;font-size:12px">✦</span> Galahad</div>
-    <div class="fl">
-      <a href="mailto:xtincell@gmail.com?subject=Galahad%20Acces%20au%20code">Accès au code</a>
-      <a href="#roles">Roles</a>
-      <a href="#pricing">Service</a>
-      <span class="mono">Propriétaire · self-hosted · © 2026</span>
-    </div>
+    <span><span lang="en">Content Operations</span> · Galahad · © 2026</span>
+    <nav aria-label="Pied de page">
+      <ul>
+        <li><a href="#pricing">Prix</a></li>
+        <li><a href="#limites">Ce que nous ne promettons pas</a></li>
+        <li><a href="mailto:xtincell@gmail.com?subject=Galahad%20%E2%80%94%20Content%20Operations">Contact</a></li>
+        <li><a href="mailto:xtincell@gmail.com?subject=Galahad%20Acces%20au%20code">Accès au code (développeurs)</a></li>
+      </ul>
+    </nav>
   </div></footer>
-</main>
+</div>
 </body>
 </html>
