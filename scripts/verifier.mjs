@@ -78,5 +78,33 @@ else {
   if (copies === 0) erreurs.push("Dockerfile : aucune source COPY/ADD trouvée");
 }
 
+// Charte UPgraders. Reprend, pour le CSS de la page, les clauses couleur et police de la
+// règle d'adhérence de la charte (ADVE-project, docs/design-system/upgraders/_adherence.oxlintrc.json) :
+// hors du bloc copié de la charte (#charte-upgraders), ni couleur en dur ni police nommée.
+// Vérifie aussi le bandeau et le pied communs, qui ramènent à powerupgraders.com et aux autres outils.
+if (existsSync("index.html")) {
+  const html = readFileSync("index.html", "utf8");
+  const blocs = [...html.matchAll(/<style\b([^>]*)>([\s\S]*?)<\/style>/gi)];
+  const charte = blocs.filter(([, a]) => /id="charte-upgraders"/.test(a)).map((b) => b[2]).join("\n");
+  const page = blocs.filter(([, a]) => !/id="charte-upgraders"/.test(a)).map((b) => b[2])
+    .concat([...html.matchAll(/\sstyle="([^"]*)"/gi)].map((m) => m[1])).join("\n").replace(/\/\*[\s\S]*?\*\//g, "");
+  const POLICE = /^(?:var\(--font-(?:display|sans|mono)\)|inherit)$/;
+  for (const m of page.matchAll(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch)\(|:\s*(?:white|black)\b/gi)) erreurs.push(`charte : couleur en dur « ${m[0]} »`);
+  for (const m of page.matchAll(/font-family\s*:\s*([^;}]+)/gi)) if (!POLICE.test(m[1].trim())) erreurs.push(`charte : police hors charte « ${m[1].trim()} »`);
+  for (const m of page.matchAll(/(?<![-\w])font\s*:\s*([^;}]+)/gi)) if (!POLICE.test(m[1].trim().split(/\s+/).pop())) erreurs.push(`charte : police hors charte « ${m[1].trim()} »`);
+  for (const jeton of [/--up-red:\s*#e56458;/, /--accent:\s*var\(--up-red\);/, /--up-ink-2:\s*#151515;/, /--surface-card:\s*var\(--up-ink-2\);/,
+    /--text-primary:\s*var\(--up-bone\);/, /--font-display:\s*"Clash Display"/, /--font-sans:\s*"Satoshi"/]) {
+    if (!jeton.test(charte)) erreurs.push(`charte : jeton absent de #charte-upgraders ${jeton}`);
+  }
+  for (const cadre of [/<nav class="upg-barre"[\s\S]*?<\/nav>/, /<div class="upg-pied">[\s\S]*?<\/nav>/]) {
+    const bloc = html.match(cadre)?.[0];
+    if (!bloc) { erreurs.push(`charte : cadre commun absent ${cadre}`); continue; }
+    for (const url of ["https://powerupgraders.com/", "https://xtincell.github.io/indice-maturite/", "https://la-barre-vitrine.powerupgraders.com/"]) {
+      if (!bloc.includes(`href="${url}"`)) erreurs.push(`charte : le cadre ne mène pas à ${url}`);
+    }
+    if (!bloc.includes('href="https://galahad.powerupgraders.com/" aria-current="page"')) erreurs.push("charte : Galahad n'est pas marqué comme page courante");
+  }
+}
+
 if (erreurs.length) { console.error(erreurs.map((e) => `ÉCHEC ${e}`).join("\n")); process.exit(1); }
-console.log("Vérification réussie : index.html, Dockerfile et ancres internes.");
+console.log("Vérification réussie : index.html, Dockerfile, ancres internes et charte UPgraders.");
